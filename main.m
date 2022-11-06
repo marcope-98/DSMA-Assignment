@@ -5,14 +5,11 @@ close all;
 init;
 
 %% scan loop
-r = LidarScan([Point(1), Point(2), deg2rad(90)], Coccupied, lidar_settings);
-
+r = l.scan(e.getValidPose(), e.Coccupied);
 [isScanAccepted, loopClosureInfo, optimizationInfo] = addScan(slamAlg, r);
-
 show(slamAlg);
-
 [scans, optimizedPoses]  = scansAndPoses(slamAlg);
-map = buildMap(scans, optimizedPoses, map_settings.Resolution, lidar_settings.maxRange);
+map = buildMap(scans, optimizedPoses, s.mapResolution, l.maxRange);
 %% plotting
 
 figure
