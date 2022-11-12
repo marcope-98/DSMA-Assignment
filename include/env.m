@@ -1,13 +1,13 @@
 classdef env < handle
     properties (Constant)
-        Resolution = 1; % 20
-        Scale = 0.1;
+        Resolution = 1; % cells per one meter
+        Scale = 0.1;    % scaling factor of polyshape wrt to origin
     end
     
     properties
         boundary;
         Cfree;
-        Coccupied; 
+        Coccupied;
     end
 
     
@@ -36,10 +36,13 @@ classdef env < handle
             pose = [0,0,0];
             in = false;
             while ~in
+                % sample random x and y coordinates in map boundary
                 pose(1)=unifrnd(obj.boundary(1), obj.boundary(3));
                 pose(2)=unifrnd(obj.boundary(2), obj.boundary(4));
+                % check if sampled coordinates are inside Cfree
                 in = isinterior(obj.Cfree, pose(1), pose(2));
             end
+            % assign random yaw (in radiants)
             pose(3) = deg2rad(360*rand());
         end
     end
