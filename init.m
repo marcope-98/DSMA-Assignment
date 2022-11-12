@@ -15,9 +15,7 @@ e = env(world_limits, boundary, buildings);
 
 %% initialize SLAM algo
 slamAlg = lidarSLAM(s.mapResolution, l.maxRange);
-slamAlg.LoopClosureThreshold = 200;  
-slamAlg.LoopClosureSearchRadius = 3;
-
-Point = [527,425]; % This is a known viable point
+slamAlg.LoopClosureThreshold = 210;  
+slamAlg.LoopClosureSearchRadius = 8;
 
 clear boundary_path buildings_path
