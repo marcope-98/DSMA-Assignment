@@ -1,35 +1,32 @@
 classdef lidar
-    properties (Constant)
-        ScanSize  = 541;      % [-] // make this always an odd number so zero is a value in the angles91
-        minRange  = 0.1;
-        maxRange  = 20;       % [m]
-        FOV       = 270;      % [deg]
-    end
-    
     properties
         angles    = [];                  % [rad]
+        minRange;
+        maxRange;
+        scanSize;
     end
     
 
     
     methods
-        function obj = lidar()
+        function obj = lidar(cfg)
             % Constructor
-            obj.angles = deg2rad(-obj.FOV/2 : ...
-                                  obj.FOV/(obj.ScanSize-1) : ...
-                                  obj.FOV/2);
+            obj.angles = deg2rad(-cfg.FOV/2 : ...
+                                  cfg.FOV/(cfg.scanSize-1) : ...
+                                  cfg.FOV/2);
+            obj.minRange = cfg.minRange;
+            obj.maxRange = cfg.maxRange;
+            obj.scanSize = cfg.scanSize;
         end
         
         function scans = scan(obj, pose, map)
             % this is basically a naive raytracing algorithm
-            
-%             ranges = obj.maxRange*ones(obj.ScanSize,1);
-            ranges = zeros(obj.ScanSize,1);                        
+            ranges = zeros(obj.scanSize,1);                        
             pos = pose(1:2);
             yaw = pose(3);
             rotMat = [cos(yaw), -sin(yaw);...
                       sin(yaw), +cos(yaw)];
-            for i = 1 : obj.ScanSize
+            for i = 1 : obj.scanSize
                 % linesegment is a 2x2 matrix:
                 %   first  row is starting point of line segment (i.e. pos)
                 %   second row is the final point of the line segment (i.e. the ray with maxRange length)

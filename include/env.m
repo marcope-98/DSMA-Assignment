@@ -1,9 +1,5 @@
 classdef env < handle
-    properties (Constant)
-        Resolution = 1; % cells per one meter
-        Scale = 0.1;    % scaling factor of polyshape wrt to origin
-    end
-    
+
     properties
         boundary;
         Cfree;
@@ -12,8 +8,7 @@ classdef env < handle
 
     
     methods
-        
-        function  obj = env(world, boundary, obstacles)
+        function  obj = env(world, boundary, obstacles, Scale)
             obj.boundary  = boundary;
             obj.Cfree     = polyshape([boundary(1), boundary(1) + boundary(3), boundary(1) + boundary(3), boundary(1)],...
                                       [boundary(2), boundary(2),               boundary(2) + boundary(4), boundary(2) + boundary(4)]);
@@ -25,13 +20,11 @@ classdef env < handle
             end
             obj.Coccupied = subtract(obj.Coccupied, obj.Cfree);
             
-            obj.boundary  = obj.boundary * obj.Scale;
-            obj.Coccupied = scale(obj.Coccupied, obj.Scale);
-            obj.Cfree     = scale(obj.Cfree, obj.Scale);
+            obj.boundary  = obj.boundary * Scale;
+            obj.Coccupied = scale(obj.Coccupied, Scale);
+            obj.Cfree     = scale(obj.Cfree, Scale);
         end
         
-        
-   
         function pose = getValidPose(obj)
             pose = [0,0,0];
             in = false;
@@ -44,6 +37,10 @@ classdef env < handle
             end
             % assign random yaw (in radiants)
             pose(3) = deg2rad(360*rand());
+        end
+        
+        function map = getMap(obj)
+            map = obj.Coccupied;
         end
     end
 

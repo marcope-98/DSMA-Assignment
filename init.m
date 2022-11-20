@@ -1,26 +1,24 @@
 %% includes
 addpath(genpath('include'));
 
-%% load constants and models
-s = common; % settings/constants
-l = lidar;  % TODO: move constructor into agent class after
+%% load config, variables and constants
+config;
 
 %% initialize environment
 % load environment
-boundary     = readmatrix(s.boundary_path);
-world_limits = boundary + s.padding * [-1, -1, 2, 2] ;
-buildings    = shaperead(s.buildings_path);
+boundary     = readmatrix(boundary_path);
+world_limits = boundary + padding * [-1, -1, 2, 2] ;
+buildings    = shaperead(buildings_path);
 % initialize environment
-e = env(world_limits, boundary, buildings);
+e = env(world_limits, boundary, buildings, map_cfg.Scale);
+map = e.getMap();
 
 %% initialize SLAM algo
-% I have no idea how to tune these hyperparameters
-slamAlg = lidarSLAM(s.mapResolution, l.maxRange,20);
-slamAlg.LoopClosureThreshold = 210;  
-slamAlg.LoopClosureSearchRadius = 8;
+slamAlg = lidarSLAM(map_cfg.mapResolution, lidar_cfg.maxRange, 20);
+slamAlg.LoopClosureThreshold    = slam_cfg.LoopClosureThreshold;  
+slamAlg.LoopClosureSearchRadius = slam_cfg.LoopClosureSearchRadius;
 
-%% initialized vector field histogram with scans
-vfh = controllerVFH;
-vfh.UseLidarScan = true;
-
-clear boundary world_limits buildings
+clear boundary  boundary_path ...
+      buildings buildings_path ...
+      padding world_limits
+      
