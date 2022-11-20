@@ -6,9 +6,10 @@ init;
 
 %% scan loop
 % pose = e.getValidPose();
-iterations = 100;
+iterations = 300;
 poses = zeros(iterations,3);
-
+deltaYaw = 0;
+deltaX   = 0.2;
 pose = [60,30, atan2(30,-10)];
 for i = 1 : iterations
 i
@@ -18,19 +19,11 @@ r = l.scan(pose, e.Coccupied);
 
 [isScanAccepted, loopClosureInfo, optimizationInfo] = addScan(slamAlg, r);
 
-% show(slamAlg);
-% VFH = l.maxRange - r.Ranges;
-% middle = (numel(VFH)-1)/2 + 1;
-% [~, candidate] = min(VFH);
-% if VFH(candidate) >= VFH(middle) 
-%     candidate = middle;
-% end
-% rotMat = [cos(pose(3)), -sin(pose(3));...
-%           sin(pose(3)), +cos(pose(3))];
-% pose(1:2) = pose(1:2) + (s.deltaX*rotMat*[cos(l.angles(candidate)); sin(l.angles(candidate))])';
-
-pose(1:2) = pose(1:2) + (0.01*[-10, 30]);
-% pose(3) = pose(3) + deg2rad(1);
+steeringDir = vfh(r,0);
+rotMat = [cos(pose(3)), -sin(pose(3));...
+          sin(pose(3)), +cos(pose(3))];
+pose(1:2) = pose(1:2) + (deltaX*rotMat*[cos(deg2rad(deltaYaw)); sin(deg2rad(deltaYaw))])';
+pose(3) = pose(3) + steeringDir;
 
 end
 

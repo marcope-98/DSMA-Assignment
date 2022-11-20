@@ -15,8 +15,12 @@ e = env(world_limits, boundary, buildings);
 
 %% initialize SLAM algo
 % I have no idea how to tune these hyperparameters
-slamAlg = lidarSLAM(s.mapResolution, l.maxRange);
+slamAlg = lidarSLAM(s.mapResolution, l.maxRange,20);
 slamAlg.LoopClosureThreshold = 210;  
 slamAlg.LoopClosureSearchRadius = 8;
+
+%% initialized vector field histogram with scans
+vfh = controllerVFH;
+vfh.UseLidarScan = true;
 
 clear boundary world_limits buildings

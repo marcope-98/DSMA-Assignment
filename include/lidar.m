@@ -1,6 +1,7 @@
 classdef lidar
     properties (Constant)
         ScanSize  = 541;      % [-] // make this always an odd number so zero is a value in the angles91
+        minRange  = 0.1;
         maxRange  = 20;       % [m]
         FOV       = 270;      % [deg]
     end
@@ -22,7 +23,8 @@ classdef lidar
         function scans = scan(obj, pose, map)
             % this is basically a naive raytracing algorithm
             
-            ranges = obj.maxRange*ones(obj.ScanSize,1);
+%             ranges = obj.maxRange*ones(obj.ScanSize,1);
+            ranges = zeros(obj.ScanSize,1);                        
             pos = pose(1:2);
             yaw = pose(3);
             rotMat = [cos(yaw), -sin(yaw);...
@@ -44,7 +46,7 @@ classdef lidar
             end
             % create lidarScans and return
             scans = lidarScan(ranges, obj.angles);
-        end
+            end
         
 
     end
